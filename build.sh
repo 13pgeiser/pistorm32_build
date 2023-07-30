@@ -30,7 +30,7 @@ RUN set -ex \
     && cd Emu68 \
     && mkdir build install \
     && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=../install -DTARGET=raspi64 -DVARIANT=pistorm \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=../install -DTARGET=raspi64 -DVARIANT=pistorm32lite \
     	-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch64-linux-gnu.cmake \
     && make -j $(nproc) \
     && make install
