@@ -18,15 +18,19 @@ RUN set -ex \
 	cmake \
 	git \
 	ca-certificates \
+	xz-utils \
 	zip \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 RUN set -ex \
+    && mkdir -p /release \
     && git clone https://github.com/michalsc/Emu68.git \
     && cd Emu68 \
-    && git submodule update --init --recursive
-RUN set -ex \
+    && git submodule update --init --recursive \
     && cp /usr/aarch64-linux-gnu/include/gnu/stubs-lp64.h /usr/aarch64-linux-gnu/include/gnu/stubs-lp64_be.h \
+    && cd .. \
+    && tar cvJf /release/pistorm32-lite_src.tar.xz Emu68
+RUN set -ex \
     && cd Emu68 \
     && mkdir build install \
     && cd build \
@@ -36,7 +40,6 @@ RUN set -ex \
     && make install
 RUN set -ex \
     && cd Emu68/install \
-    && mkdir -p /release \
     && zip -r /release/pistorm32-lite.zip ./*
 EOF
 docker_build_image_and_create_volume
