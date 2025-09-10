@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 docker_configure
 docker_setup "pistorm32_build"
-dockerfile_create
+dockerfile_create bookworm
 cat >>"$DOCKERFILE" <<'EOF'
 RUN set -ex \
     && apt-get update \
