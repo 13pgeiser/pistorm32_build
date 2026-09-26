@@ -6,20 +6,21 @@ if [ -z "$1" ]; then
 fi
 docker_configure
 docker_setup "pistorm32_build"
-dockerfile_create bookworm
+dockerfile_create "ubuntu:24.04"
 cat >>"$DOCKERFILE" <<'EOF'
 RUN set -ex \
     && apt-get update \
     && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends \
-    	build-essential \
-    	gcc-aarch64-linux-gnu \
-    	g++-aarch64-linux-gnu \
-	cmake \
-	git \
-	ca-certificates \
-	xz-utils \
-	zip \
+        build-essential ninja-build device-tree-compiler xxd \
+        gcc g++ \
+        gcc-14-aarch64-linux-gnu g++-14-aarch64-linux-gnu \
+        gcc-14-powerpc-linux-gnu g++-14-powerpc-linux-gnu \
+        cmake \
+        git \
+        ca-certificates \
+        xz-utils \
+        zip \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 RUN set -ex \
@@ -34,7 +35,8 @@ RUN set -ex \
     && cd Emu68 \
     && mkdir build install \
     && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=../install -DTARGET=raspi64 -DVARIANT=pistorm32lite \
+    && cmake .. -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=../install \
+        -DTARGET=raspi64 -DVARIANT=pistorm \
     	-DCMAKE_TOOLCHAIN_FILE=../toolchains/aarch64-linux-gnu.cmake \
     && make -j $(nproc) \
     && make install
